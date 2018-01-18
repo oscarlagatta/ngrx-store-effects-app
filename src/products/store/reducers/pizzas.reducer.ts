@@ -1,6 +1,5 @@
 import * as fromPizzas from "../actions/pizzas.action";
-import { Pizza } from "src/products/models/pizza.model";
-import { LOAD_PIZZAS_SUCCESS } from "../actions/pizzas.action";
+import { Pizza } from "../../models/pizza.model";
 
 export interface PizzaState {
   entities: { [id: number]: Pizza };
@@ -8,7 +7,7 @@ export interface PizzaState {
   loading: boolean;
 }
 
-export const initialState = {
+export const initialState: PizzaState = {
   entities: {},
   loaded: false,
   loading: false
@@ -25,6 +24,7 @@ export function reducer(
         loading: true
       };
     }
+
     case fromPizzas.LOAD_PIZZAS_SUCCESS: {
       const pizzas = action.payload;
 
@@ -47,11 +47,36 @@ export function reducer(
         entities
       };
     }
+
     case fromPizzas.LOAD_PIZZAS_FAIL: {
       return {
         ...state,
         loading: false,
         loaded: false
+      };
+    }
+
+    case fromPizzas.UPDATE_PIZZA_SUCCESS:
+    case fromPizzas.CREATE_PIZZA_SUCCESS: {
+      const pizza = action.payload;
+      const entities = {
+        ...state.entities,
+        [pizza.id]: pizza
+      };
+
+      return {
+        ...state,
+        entities
+      };
+    }
+
+    case fromPizzas.REMOVE_PIZZA_SUCCESS: {
+      const pizza = action.payload;
+      const { [pizza.id]: removed, ...entities } = state.entities;
+
+      return {
+        ...state,
+        entities
       };
     }
   }
